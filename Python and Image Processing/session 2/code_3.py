@@ -22,10 +22,16 @@ def detect_shapes(img):
         
         #detecting shape 
         approx = cv2.approxPolyDP(contour, 0.04* cv2.arcLength(contour, True), True)
+        
         if len(approx) == 3 :
             Shape = 'Triangle'
         elif len(approx) == 4 :
-            shape = 'Rectangle'
+            x, y , w, h = cv2.boundingRect(approx)
+            aspectRatio = float(w)/h
+            if aspectRatio >= 0.95 and aspectRatio < 1.10:
+                Shape = 'Square'
+            else:
+                Shape = 'Rectangle'
         elif len(approx) == 5 :
             Shape = 'Pentagon'
         else:
@@ -60,6 +66,7 @@ def detect_shapes(img):
         mp = (cX,cY)
         shape_details.append(mp)
         detected_shapes.append(shape_details)
+
     ##################################################
     
     return detected_shapes
@@ -73,33 +80,12 @@ def get_labeled_image(img, detected_shapes):
     return img
 
 if __name__ == '__main__':
+    
     img_dir_path = 'images_data/'
-    file_num = 1
-    img_file_path = img_dir_path + 'test_image_' + str(file_num) + '.png'
-
-    # read images
-    img = cv2.imread(img_file_path)
-    
-    print('\nFor test_image_' + str(file_num) + '.png')
-    
-    # detect the shapes from image
-    detected_shapes = detect_shapes(img)
-    print(detected_shapes)
-    
-    # display image with labeled shapes
-    img = get_labeled_image(img, detected_shapes)
-    cv2.imshow("labeled_image", img)
-    cv2.waitKey(2000)
-    cv2.destroyAllWindows()
-    
-    choice = input('\nDo you want to run your script on all test images ? => "y" or "n": ')
-    
-    if choice == 'y':
-
-        for file_num in range(1, 16):
+    for file_num in range(1, 11):
             img_file_path = img_dir_path + 'test_image_' + str(file_num) + '.png'
             img = cv2.imread(img_file_path)
-            print('\n============================================')
+            print('\n****************************************')
             print('\nFor test_image_' + str(file_num) + '.png')
             
             # detect shape properties from image
@@ -113,3 +99,6 @@ if __name__ == '__main__':
             cv2.destroyAllWindows()
 
 
+
+
+        
